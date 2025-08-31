@@ -1,0 +1,692 @@
+import React, { ReactNode } from 'react';
+import { motion } from 'framer-motion';
+import Card from '../common/Card';
+
+// GlassCard Component
+interface GlassCardProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
+  return (
+    <div className={`bg-white/70 backdrop-blur-md rounded-xl shadow-lg p-6 ${className}`}>
+      {children}
+    </div>
+  );
+};
+
+// AdminCard Component
+interface AdminCardProps {
+  title: string;
+  children: ReactNode;
+  className?: string;
+  headerClassName?: string;
+  bodyClassName?: string;
+  onClick?: () => void;
+}
+
+export const AdminCard: React.FC<AdminCardProps> = ({
+  title,
+  children,
+  className = '',
+  headerClassName = '',
+  bodyClassName = '',
+  onClick
+}) => {
+  return (
+    <Card className={`overflow-hidden ${className}`}>
+      <div 
+        className={`bg-trinexa-700 text-white py-3 px-4 -mx-6 -mt-6 mb-4 font-medium ${headerClassName}`}
+      >
+        {title}
+      </div>
+      <div className={`${bodyClassName}`} onClick={onClick}>
+        {children}
+      </div>
+    </Card>
+  );
+};
+
+// AdminSection Component
+interface AdminSectionProps {
+  title: string;
+  description?: string;
+  children: ReactNode;
+  className?: string;
+  animate?: boolean;
+}
+            {isCollapsible && (
+              <button
+                onClick={() => setIsCollapsed(!isCollapsed)}
+                className="ml-2 text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-5 w-5 transition-transform ${isCollapsed ? '' : 'transform rotate-180'}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+            )}
+          </h3>
+          {description && <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">{description}</p>}
+        </div>
+        {action && <div>{action}</div>}
+      </div>
+      <motion.div
+        initial={isCollapsible ? { height: isCollapsed ? 0 : 'auto' } : false}
+        animate={isCollapsible ? { height: isCollapsed ? 0 : 'auto' } : false}
+        transition={{ duration: 0.3 }}
+        className={`overflow-hidden ${isCollapsed ? 'invisible' : 'visible'}`}
+      >
+        <div className="p-4 sm:p-5">{children}</div>
+      </motion.div>
+    </div>
+  );
+};
+
+interface AdminCardProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const AdminCard: React.FC<AdminCardProps> = ({ children, className = '' }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className={`bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-sm p-4 ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+interface AdminFormFieldProps {
+  label: string;
+  children: React.ReactNode;
+  helperText?: string;
+  required?: boolean;
+  compact?: boolean;
+  className?: string;
+}
+
+export const AdminFormField: React.FC<AdminFormFieldProps> = ({
+  label,
+  children,
+  helperText,
+  required = false,
+  compact = false,
+  className = '',
+}) => {
+  return (
+    <div className={`${className}`}>
+      <label className={`block text-sm font-medium text-neutral-700 dark:text-neutral-300 ${compact ? 'mb-1' : 'mb-2'}`}>
+        {label}
+        {required && <span className="ml-1 text-red-500">*</span>}
+      </label>
+      {children}
+      {helperText && <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{helperText}</p>}
+    </div>
+  );
+};
+
+interface AdminInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  icon?: React.ReactNode;
+}
+
+export const AdminInput: React.FC<AdminInputProps> = ({ icon, className = '', ...props }) => {
+  return (
+    <div className="relative">
+      {icon && (
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-neutral-500 dark:text-neutral-400">
+          {icon}
+        </div>
+      )}
+      <input
+        {...props}
+        className={`trinexa-input bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 w-full ${
+          icon ? 'pl-10' : 'px-4'
+        } py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-trinexa-primary focus:border-trinexa-primary transition-all duration-200 ${className}`}
+      />
+    </div>
+  );
+};
+
+interface AdminTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+
+export const AdminTextarea: React.FC<AdminTextareaProps> = ({ className = '', ...props }) => {
+  return (
+    <textarea
+      {...props}
+      className={`trinexa-input bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-trinexa-primary focus:border-trinexa-primary transition-all duration-200 ${className}`}
+    />
+  );
+};
+
+interface AdminSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  options: { value: string; label: string }[];
+}
+
+export const AdminSelect: React.FC<AdminSelectProps> = ({ options, className = '', ...props }) => {
+  return (
+    <select
+      {...props}
+      className={`trinexa-input bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-trinexa-primary focus:border-trinexa-primary transition-all duration-200 appearance-none ${className}`}
+    >
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  );
+};
+
+interface AdminActionButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  icon?: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  className?: string;
+  type?: 'button' | 'submit' | 'reset';
+}
+
+export const AdminActionButton: React.FC<AdminActionButtonProps> = ({
+  children,
+  onClick,
+  icon,
+  variant = 'primary',
+  size = 'md',
+  disabled = false,
+  className = '',
+  type = 'button',
+}) => {
+  const variantClasses = {
+    primary: 'bg-trinexa-primary hover:bg-trinexa-primary-dark text-white',
+    secondary: 'bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-200',
+    danger: 'bg-red-500 hover:bg-red-600 text-white',
+    success: 'bg-emerald-500 hover:bg-emerald-600 text-white',
+    warning: 'bg-amber-500 hover:bg-amber-600 text-white',
+  };
+
+  const sizeClasses = {
+    sm: 'text-xs px-2 py-1',
+    md: 'text-sm px-4 py-2',
+    lg: 'text-base px-6 py-3',
+  };
+
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`rounded font-medium transition-colors duration-200 flex items-center justify-center ${
+        variantClasses[variant]
+      } ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+    >
+      {icon && <span className={`${children ? 'mr-2' : ''}`}>{icon}</span>}
+      {children}
+    </button>
+  );
+};
+          </h3>
+          {description && <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">{description}</p>}
+        </div>
+        {action && <div>{action}</div>}
+      </div>
+      <motion.div
+        initial={isCollapsible ? { height: isCollapsed ? 0 : 'auto' } : false}
+        animate={isCollapsible ? { height: isCollapsed ? 0 : 'auto' } : false}
+        transition={{ duration: 0.3 }}
+        className={`overflow-hidden ${isCollapsed ? 'invisible' : 'visible'}`}
+      >
+        <div className="p-4 sm:p-5">{children}</div>
+      </motion.div>
+    </div>
+  );
+};
+
+interface AdminCardProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const AdminCard = ({ children, className = '' }: AdminCardProps) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className={`bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-sm p-4 ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+interface AdminFormFieldProps {
+  label: string;
+  children: React.ReactNode;
+  helperText?: string;
+  required?: boolean;
+  compact?: boolean;
+  className?: string;
+}
+
+export const AdminFormField = ({
+  label,
+  children,
+  helperText,
+  required = false,
+  compact = false,
+  className = '',
+}: AdminFormFieldProps) => {
+  return (
+    <div className={`${className}`}>
+      <label className={`block text-sm font-medium text-neutral-700 dark:text-neutral-300 ${compact ? 'mb-1' : 'mb-2'}`}>
+        {label}
+        {required && <span className="ml-1 text-red-500">*</span>}
+      </label>
+      {children}
+      {helperText && <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{helperText}</p>}
+    </div>
+  );
+};
+
+interface AdminInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  icon?: React.ReactNode;
+}
+
+export const AdminInput = ({ icon, className = '', ...props }: AdminInputProps) => {
+  return (
+    <div className="relative">
+      {icon && (
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-neutral-500 dark:text-neutral-400">
+          {icon}
+        </div>
+      )}
+      <input
+        {...props}
+        className={`trinexa-input bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 w-full ${
+          icon ? 'pl-10' : 'px-4'
+        } py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-trinexa-primary focus:border-trinexa-primary transition-all duration-200 ${className}`}
+      />
+    </div>
+  );
+};
+
+interface AdminTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+
+export const AdminTextarea = ({ className = '', ...props }: AdminTextareaProps) => {
+  return (
+    <textarea
+      {...props}
+      className={`trinexa-input bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-trinexa-primary focus:border-trinexa-primary transition-all duration-200 ${className}`}
+    />
+  );
+};
+
+interface AdminSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  options: { value: string; label: string }[];
+}
+
+export const AdminSelect = ({ options, className = '', ...props }: AdminSelectProps) => {
+  return (
+    <select
+      {...props}
+      className={`trinexa-input bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-trinexa-primary focus:border-trinexa-primary transition-all duration-200 appearance-none ${className}`}
+    >
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  );
+};
+
+interface AdminActionButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  icon?: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  className?: string;
+  type?: 'button' | 'submit' | 'reset';
+}
+
+export const AdminActionButton = ({
+  children,
+  onClick,
+  icon,
+  variant = 'primary',
+  size = 'md',
+  disabled = false,
+  className = '',
+  type = 'button',
+}: AdminActionButtonProps) => {
+  const variantClasses = {
+    primary: 'bg-trinexa-primary hover:bg-trinexa-primary-dark text-white',
+    secondary: 'bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-200',
+    danger: 'bg-red-500 hover:bg-red-600 text-white',
+    success: 'bg-emerald-500 hover:bg-emerald-600 text-white',
+    warning: 'bg-amber-500 hover:bg-amber-600 text-white',
+  };
+
+  const sizeClasses = {
+    sm: 'text-xs px-2 py-1',
+    md: 'text-sm px-4 py-2',
+    lg: 'text-base px-6 py-3',
+  };
+
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`rounded font-medium transition-colors duration-200 flex items-center justify-center ${
+        variantClasses[variant]
+      } ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+    >
+      {icon && <span className={`${children ? 'mr-2' : ''}`}>{icon}</span>}
+      {children}
+    </button>
+  );
+};
+          </h3>
+          {description && <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">{description}</p>}
+        </div>
+        {actions && <div className="flex space-x-2">{actions}</div>}
+      </div>
+      
+      {(!isCollapsible || !isCollapsed) && (
+        <div className="p-4 sm:p-5">{children}</div>
+      )}
+    </div>
+  );
+};
+
+interface AdminFormFieldProps {
+  label: string;
+  htmlFor?: string;
+  helperText?: string;
+  error?: string;
+  required?: boolean;
+  children: React.ReactNode;
+}
+
+export const AdminFormField = ({
+  label,
+  htmlFor,
+  helperText,
+  error,
+  required = false,
+  children,
+}: AdminFormFieldProps) => {
+  return (
+    <div className="mb-4">
+      <label
+        htmlFor={htmlFor}
+        className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
+      >
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+      {children}
+      {helperText && !error && (
+        <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{helperText}</p>
+      )}
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+    </div>
+  );
+};
+
+interface AdminActionButtonProps {
+  onClick?: () => void;
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
+  size?: 'sm' | 'md' | 'lg';
+  icon?: React.ReactNode;
+  isLoading?: boolean;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+}
+
+export const AdminActionButton = ({
+  onClick,
+  children,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  isLoading = false,
+  disabled = false,
+  type = 'button',
+}: AdminActionButtonProps) => {
+  const variantClasses = {
+    primary: 'bg-trinexa-primary hover:bg-trinexa-primary-dark text-white',
+    secondary: 'bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-600 text-neutral-800 dark:text-white',
+    danger: 'bg-red-500 hover:bg-red-600 text-white',
+    success: 'bg-green-500 hover:bg-green-600 text-white',
+    warning: 'bg-yellow-500 hover:bg-yellow-600 text-white',
+  };
+
+  const sizeClasses = {
+    sm: 'px-2.5 py-1.5 text-xs',
+    md: 'px-4 py-2 text-sm',
+    lg: 'px-6 py-3 text-base',
+  };
+
+  return (
+    <motion.button
+      type={type}
+      className={`
+        inline-flex items-center justify-center font-medium rounded-lg
+        ${variantClasses[variant]}
+        ${sizeClasses[size]}
+        ${disabled || isLoading ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-trinexa-md'}
+        transition-all duration-200
+      `}
+      onClick={onClick}
+      disabled={disabled || isLoading}
+      whileHover={!disabled && !isLoading ? { scale: 1.02 } : {}}
+      whileTap={!disabled && !isLoading ? { scale: 0.98 } : {}}
+    >
+      {isLoading ? (
+        <>
+          <svg
+            className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          Processing...
+        </>
+      ) : (
+        <>
+          {icon && <span className="mr-2">{icon}</span>}
+          {children}
+        </>
+      )}
+    </motion.button>
+  );
+};
+
+interface AdminCardProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const AdminCard = ({ children, className = '' }: AdminCardProps) => {
+  return (
+    <GlassCard
+      className={`p-5 border border-neutral-200 dark:border-neutral-700 ${className}`}
+      hoverEffect={false}
+    >
+      {children}
+    </GlassCard>
+  );
+};
+
+export const AdminInput = ({
+  id,
+  type = 'text',
+  placeholder,
+  value,
+  onChange,
+  disabled = false,
+  icon,
+  error,
+  ...rest
+}: {
+  id?: string;
+  type?: string;
+  placeholder?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+  icon?: React.ReactNode;
+  error?: string;
+  [key: string]: any;
+}) => {
+  return (
+    <div className="relative">
+      {icon && (
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-neutral-500">
+          {icon}
+        </div>
+      )}
+      <input
+        id={id}
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+        className={`
+          trinexa-input bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 
+          w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 
+          ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'focus:ring-trinexa-primary focus:border-trinexa-primary'} 
+          transition-all duration-200
+          ${icon ? 'pl-10' : ''}
+          ${disabled ? 'bg-neutral-100 dark:bg-neutral-800 cursor-not-allowed' : ''}
+        `}
+        {...rest}
+      />
+    </div>
+  );
+};
+
+export const AdminTextarea = ({
+  id,
+  placeholder,
+  value,
+  onChange,
+  rows = 3,
+  disabled = false,
+  error,
+  ...rest
+}: {
+  id?: string;
+  placeholder?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  rows?: number;
+  disabled?: boolean;
+  error?: string;
+  [key: string]: any;
+}) => {
+  return (
+    <textarea
+      id={id}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      rows={rows}
+      disabled={disabled}
+      className={`
+        trinexa-input bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 
+        w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 
+        ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'focus:ring-trinexa-primary focus:border-trinexa-primary'} 
+        transition-all duration-200
+        ${disabled ? 'bg-neutral-100 dark:bg-neutral-800 cursor-not-allowed' : ''}
+      `}
+      {...rest}
+    />
+  );
+};
+
+export const AdminSelect = ({
+  id,
+  value,
+  onChange,
+  options,
+  disabled = false,
+  error,
+  ...rest
+}: {
+  id?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: { value: string; label: string }[];
+  disabled?: boolean;
+  error?: string;
+  [key: string]: any;
+}) => {
+  return (
+    <div className="relative">
+      <select
+        id={id}
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+        className={`
+          trinexa-input bg-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 
+          w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 appearance-none
+          ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'focus:ring-trinexa-primary focus:border-trinexa-primary'} 
+          transition-all duration-200 pr-10
+          ${disabled ? 'bg-neutral-100 dark:bg-neutral-800 cursor-not-allowed' : ''}
+        `}
+        {...rest}
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-500">
+        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+          <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+        </svg>
+      </div>
+    </div>
+  );
+};

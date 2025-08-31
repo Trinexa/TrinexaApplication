@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .logo-display { margin: 10px 0; }
+        .logo-display img { max-height: 60px; border: 1px solid #ddd; }
+        .status { padding: 5px 10px; border-radius: 4px; color: white; }
+        .success { background-color: #10B981; }
+        .error { background-color: #ef4444; }
+        .loading { background-color: #6b7280; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Logo System Test</h1>
+    
+    <div class="test-section">
+        <h2>📊 Database Connection Test</h2>
+        <div id="db-status" class="status loading">Testing...</div>
+        <div id="db-details"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🖼️ Logo Display Test</h2>
+        <div id="logo-status" class="status loading">Testing...</div>
+        <div class="logo-display" id="logo-display"></div>
+        <div id="logo-details"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>⚙️ System Settings</h2>
+        <div id="settings-list"></div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'http://127.0.0.1:54321';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
+        
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function testDatabase() {
+            const dbStatus = document.getElementById('db-status');
+            const dbDetails = document.getElementById('db-details');
+            
+            try {
+                const { data, error } = await supabase
+                    .from('system_settings')
+                    .select('count', { count: 'exact' });
+                
+                if (error) {
+                    dbStatus.className = 'status error';
+                    dbStatus.textContent = '❌ Database Error';
+                    dbDetails.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                    return false;
+                }
+                
+                dbStatus.className = 'status success';
+                dbStatus.textContent = '✅ Database Connected';
+                dbDetails.innerHTML = `<strong>Rows in system_settings:</strong> ${data?.length || 0}`;
+                return true;
+                
+            } catch (error) {
+                dbStatus.className = 'status error';
+                dbStatus.textContent = '❌ Connection Failed';
+                dbDetails.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                return false;
+            }
+        }
+
+        async function testLogo() {
+            const logoStatus = document.getElementById('logo-status');
+            const logoDisplay = document.getElementById('logo-display');
+            const logoDetails = document.getElementById('logo-details');
+            
+            try {
+                const { data, error } = await supabase
+                    .from('system_settings')
+                    .select('*')
+                    .eq('setting_key', 'logo_url')
+                    .single();
+                
+                if (error && error.code !== 'PGRST116') {
+                    logoStatus.className = 'status error';
+                    logoStatus.textContent = '❌ Logo Query Failed';
+                    logoDetails.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                    return;
+                }
+                
+                const logoUrl = data?.setting_value;
+                
+                if (!logoUrl || logoUrl.trim() === '') {
+                    logoStatus.className = 'status error';
+                    logoStatus.textContent = '❌ No Logo URL';
+                    logoDetails.innerHTML = '<strong>Status:</strong> Logo URL is empty or not set';
+                    return;
+                }
+                
+                // Test if the image loads
+                const img = new Image();
+                img.onload = () => {
+                    logoStatus.className = 'status success';
+                    logoStatus.textContent = '✅ Logo Loaded Successfully';
+                    logoDisplay.innerHTML = `<img src="${logoUrl}" alt="Logo Test" />`;
+                    logoDetails.innerHTML = `
+                        <strong>URL:</strong> ${logoUrl}<br>
+                        <strong>Dimensions:</strong> ${img.naturalWidth}x${img.naturalHeight}px
+                    `;
+                };
+                
+                img.onerror = () => {
+                    logoStatus.className = 'status error';
+                    logoStatus.textContent = '❌ Logo Failed to Load';
+                    logoDetails.innerHTML = `
+                        <strong>URL:</strong> ${logoUrl}<br>
+                        <strong>Error:</strong> Image could not be loaded
+                    `;
+                };
+                
+                img.src = logoUrl;
+                
+            } catch (error) {
+                logoStatus.className = 'status error';
+                logoStatus.textContent = '❌ Logo Test Failed';
+                logoDetails.innerHTML = `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+
+        async function loadAllSettings() {
+            const settingsList = document.getElementById('settings-list');
+            
+            try {
+                const { data, error } = await supabase
+                    .from('system_settings')
+                    .select('*')
+                    .order('setting_key');
+                
+                if (error) {
+                    settingsList.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
+                    return;
+                }
+                
+                if (!data || data.length === 0) {
+                    settingsList.innerHTML = '<div class="status error">No settings found</div>';
+                    return;
+                }
+                
+                const settingsHTML = data.map(setting => `
+                    <div style="margin: 5px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                        <strong>${setting.setting_key}:</strong> 
+                        <span style="color: #666;">${setting.setting_value || '(empty)'}</span>
+                        <br><small>Type: ${setting.setting_type} | ${setting.description}</small>
+                    </div>
+                `).join('');
+                
+                settingsList.innerHTML = settingsHTML;
+                
+            } catch (error) {
+                settingsList.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Run tests
+        async function runAllTests() {
+            console.log('🧪 Starting logo system tests...');
+            
+            const dbOk = await testDatabase();
+            if (dbOk) {
+                await testLogo();
+                await loadAllSettings();
+            }
+        }
+
+        // Start tests when page loads
+        window.addEventListener('load', runAllTests);
+    </script>
+</body>
+</html>
