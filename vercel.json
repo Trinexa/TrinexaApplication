@@ -1,8 +1,21 @@
 {
+<<<<<<< HEAD
   "builds": [
     { "src": "package.json", "use": "@vercel/static-build" }
   ],
   "routes": [
     { "src": "/(.*)", "dest": "/index.html" }
+=======
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ],
+  "buildCommand": "bash ./build.sh",
+  "installCommand": "npm install",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/.*", "dest": "/index.html" }
+>>>>>>> c3c89ad (Folder Structure Changed)
   ]
 }
